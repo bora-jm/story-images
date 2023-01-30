@@ -1,0 +1,393 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Metadata {
+  total: Int!
+  limit: Int!
+  offset: Int!
+}
+
+type Department {
+  id: Int!
+  name: String!
+  avatar: String
+}
+
+type Company {
+  id: Int!
+  parentId: Int
+  name: String!
+
+  """description of the company"""
+  description: String
+  status: StatusEnum!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum StatusEnum {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Position {
+  id: Int!
+  name: String!
+}
+
+type User {
+  id: Int!
+  departmentId: Int!
+  positionId: Int!
+  companyId: Int!
+  roleId: Int!
+  firstName: String!
+  lastName: String!
+  image: String
+  email: String!
+  password: String!
+  dob: DateTime!
+  pob: String!
+  currentAddress: String!
+  joinDate: DateTime!
+  gender: GenderStatusEnum!
+  userType: String!
+  phoneNumber: String
+  status: StatusEnum!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  company: Company!
+  department: Department
+  position: Position
+}
+
+enum GenderStatusEnum {
+  FEMALE
+  MALE
+}
+
+type CompanyHolidayModel {
+  id: Int!
+  companyId: Int
+  title: String
+  status: String!
+  date: DateTime!
+  createdBy: Int!
+  updatedBy: Int!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createBy: User
+  company: Company
+}
+
+type PaginatedCompanyHoliday {
+  results: [CompanyHolidayModel!]
+  metadata: Metadata
+}
+
+type UserLeave {
+  totalUse: Float
+  notUse: Float
+  leaveTypeId: Int
+}
+
+type LeaveTypeDashboard {
+  leaveTypeId: Int
+  totalDay: Int
+  name: String
+  userLeave: UserLeave
+}
+
+type AdminGetLeaveDashboard {
+  results: [LeaveTypeDashboard!]
+  total: Int
+}
+
+type AdminDashboardGraph {
+  approved: [Int!]
+  rejected: [Int!]
+}
+
+type AdminDashboard {
+  adminDashboardGraph(startedAt: String, endedAt: String, status: [LeaveStatusEnum!]): AdminDashboardGraph
+  adminDashboardTotalLeaves(filter: AdminGetDashboardInput!): AdminGetLeaveDashboard
+}
+
+enum LeaveStatusEnum {
+  PENDING
+  APPROVED
+  COMPLETED
+  CANCELLED
+  REJECTED
+  PENDING_BY_BACKUP
+}
+
+input AdminGetDashboardInput {
+  startedAt: DateTime
+  endedAt: DateTime
+  status: [LeaveDateEnum!]
+}
+
+enum LeaveDateEnum {
+  FULL_DAY
+  HALF_DAY
+  MORNING
+  AFTERNOON
+}
+
+type AdminDashboardTopLeave {
+  sendTo: Int
+  userId: Int
+  createdBy: Int
+  totalUse: Float
+  notUse: Float
+  user: User
+  approveBy: User
+}
+
+type AdminDashboardTopLeaveRes {
+  results: [AdminDashboardTopLeave!]
+}
+
+type LeaveModel {
+  id: Int!
+  userId: Int!
+  leaveTypeId: Int!
+  sendTo: Int!
+  backupBy: Int
+  status: String!
+  description: String!
+  startedAt: DateTime!
+  endedAt: DateTime!
+  startShift: String
+  endShift: String
+  numOfLeave: Float
+  createdBy: Int!
+  createdAt: DateTime
+  docReference: String!
+  attachFile: String
+  updatedBy: Int!
+  updatedAt: DateTime
+  user: User
+  createBy: User
+  approveBy: User
+  backupByUser: User
+  userBackupStatus: LeaveTransactionModel
+  leaveType: LeaveTypeModel
+  docReferences: [String!]
+}
+
+type UserLeaves {
+  totalUse: Float
+  notUse: Float
+  leaveTypeId: Int
+}
+
+type PaginatedLeave {
+  results: [LeaveModel!]
+  metadata: Metadata
+  company: [Company!]
+}
+
+type GetLeaveBalance {
+  total: Int
+  totalUse: Int
+  notUse: Int
+}
+
+type UserGetLeaveBalance {
+  leaveTypeId: Int
+  totalDay: Int
+  name: String
+  color: String
+  userLeave: UserLeaves
+}
+
+type UserGetLeaveBalanceResult {
+  results: [UserGetLeaveBalance!]
+  total: Int
+}
+
+type LeaveTransactionModel {
+  id: Int!
+  leaveId: Int!
+  userId: Int!
+  status: String!
+  createdBy: Int!
+  createdAt: DateTime
+  backupBy: User
+  leaveType: LeaveModel
+  leaveOwner: User
+}
+
+type PaginatedLeaveTransaction {
+  results: [LeaveTransactionModel!]
+  metadata: Metadata
+}
+
+type LeaveTypeModel {
+  id: Int!
+  name: String!
+  description: String
+  color: String
+  status: StatusEnum
+  totalDay: Int!
+  createdBy: Float
+  createdAt: DateTime
+  updatedBy: String
+  updatedAt: DateTime
+}
+
+type PaginatedLeaveType {
+  results: [LeaveTypeModel!]
+  metadata: Metadata
+}
+
+type Query {
+  companyHolidayList(filter: CompanyHolidayFilter = {}, limit: Int = 20, offset: Int = 0, order: [OrderBy!]): PaginatedCompanyHoliday!
+  companyHoliday(filter: CompanyHolidayFilter!): CompanyHolidayModel!
+  adminGetDashboard(filter: AdminGetDashboardInput!): AdminGetLeaveDashboard!
+  getAdminDashboard: AdminDashboard
+  getAdminDashboardTopLeave(startedAt: String, endedAt: String, status: [LeaveStatusEnum!]): AdminDashboardTopLeaveRes
+  leaveTypeList(filter: FilterLeaveType = {}, limit: Int = 20, offset: Int = 0, order: [OrderBy!]): PaginatedLeaveType!
+  leaveType(filter: FilterLeaveType!): LeaveTypeModel!
+  getUserBackupStatus(filter: FilterTransactionInput = {}, limit: Int = 20, offset: Int = 0, order: [OrderBy!]): PaginatedLeaveTransaction!
+  adminGetOneLeave(id: Int!): LeaveModel!
+  adminGetLeaveList(filter: FilterLeave = {}, limit: Int = 20, offset: Int = 0, order: [OrderBy!]): PaginatedLeave!
+  getLeaveListByUser(filter: FilterLeave = {}, limit: Int = 20, offset: Int = 0, order: [OrderBy!]): PaginatedLeave!
+  adminGetUserLeaveBalance(filter: FilterLeaveBalance!): GetLeaveBalance!
+  userGetLeaveBalance(filter: AdminGetDashboardInput!): UserGetLeaveBalanceResult!
+  adminGetUserBalanceById(filter: AdminGetUserBalanceInput!): UserGetLeaveBalanceResult!
+  userBackupGetList(filter: FilterLeave = {}, limit: Int = 20, offset: Int = 0, order: [OrderBy!]): PaginatedLeave!
+  getLeaveListByDepartment(filter: FilterLeave = {}, limit: Int = 20, offset: Int = 0, order: [OrderBy!]): PaginatedLeave!
+}
+
+input CompanyHolidayFilter {
+  id: Int
+  companyId: Int
+}
+
+enum OrderBy {
+  NATURAL
+}
+
+input FilterLeaveType {
+  id: Int
+  name: String
+}
+
+input FilterTransactionInput {
+  leaveId: Int
+  userId: Int
+  createdBy: Int
+  status: [LeaveUpdateStatusEnum!]
+}
+
+enum LeaveUpdateStatusEnum {
+  APPROVED_BY_LEADER
+  APPROVED_BY_ADMIN
+  REJECTED_BY_ADMIN
+  APPROVED_BY_BACKUP
+  REJECTED_BY_BACKUP
+  REJECTED_BY_LEADER
+  PENDING_BY_BACKUP
+  APPROVED_BY_HR
+}
+
+input FilterLeave {
+  id: Int
+  companyId: Int
+  companyIds: Int
+  leaveTypeId: Int
+  status: [LeaveStatusEnum!]
+  userIds: [Int!]
+  userId: Int
+  sendTo: Int
+  backupBy: Int
+  attachFile: String
+  startedAt: DateTime
+  endedAt: DateTime
+}
+
+input FilterLeaveBalance {
+  userId: Int
+  leaveTypeId: Int
+}
+
+input AdminGetUserBalanceInput {
+  userId: Int!
+  startedAt: DateTime
+  endedAt: DateTime
+  status: [LeaveDateEnum!]
+}
+
+type Mutation {
+  createCompanyHoliday(input: CreateCompanyHolidayInput!): CompanyHolidayModel!
+  updateCompanyHoliday(input: UpdateCompanyHolidayInput!): CompanyHolidayModel!
+  deleteCompanyHoliday(id: Float!): Boolean!
+  createLeaveType(input: CreateLeaveTypeInput!): LeaveTypeModel!
+  updateLeaveType(input: UpdateLeaveTypeInput!): LeaveTypeModel!
+  deleteLeaveType(id: Float!): Boolean!
+  requestLeave(input: RequestLeaveInput!): LeaveModel!
+  adminApproveLeave(input: ApproveLeaveInput!): Boolean!
+  adminRejectLeave(input: ApproveLeaveInput!): Boolean!
+  leaderApproveLeave(input: ApproveLeaveInput!): LeaveModel!
+  leaderRejectLeave(input: ApproveLeaveInput!): LeaveModel!
+  backupApproveLeave(input: ApproveLeaveInput!): LeaveModel!
+  backupRejectLeave(input: ApproveLeaveInput!): LeaveModel!
+}
+
+input CreateCompanyHolidayInput {
+  companyId: Int
+  title: String
+  date: DateTime!
+}
+
+input UpdateCompanyHolidayInput {
+  companyId: Int
+  title: String
+  date: DateTime!
+  id: Int!
+  status: StatusEnum = ACTIVE
+}
+
+input CreateLeaveTypeInput {
+  name: String!
+  description: String
+  color: String
+  totalDay: Int!
+}
+
+input UpdateLeaveTypeInput {
+  name: String!
+  description: String
+  color: String
+  totalDay: Int!
+  id: Int!
+  status: String = "ACTIVE"
+}
+
+input RequestLeaveInput {
+  leaveTypeId: Int!
+  sendTo: Int!
+  backupBy: Int
+  startedAt: DateTime!
+  endedAt: DateTime!
+  startShift: LeaveDateEnum
+  endShift: LeaveDateEnum
+  numOfLeave: Float!
+  description: String!
+  attachFile: String
+  docReferences: [String!] = null
+}
+
+input ApproveLeaveInput {
+  id: Int!
+}
