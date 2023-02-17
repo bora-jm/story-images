@@ -33,6 +33,13 @@ export class ChapterService {
     return { data, total };
   }
 
+  async getChapter(id: number) {
+    const chapter = await this.chapterRepo.findOne({ where: { id } });
+    if (!chapter) throw new BadRequestException(` Chapter Not Found!`);
+
+    return chapter;
+  }
+
   /**
    * Create chapter images
    */

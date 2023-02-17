@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { ChapterFilter, CreateChapterImageInput, CreateChapterInput } from './chapter.dto';
@@ -23,7 +23,13 @@ export class ChapterController {
 
   @Get()
   @ApiOperation({ summary: 'Get Chapter List' })
-  getStories(@Query() filter: ChapterFilter) {
+  getChapters(@Query() filter: ChapterFilter) {
     return this.service.getChapters(filter);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get Chapter List' })
+  getChapter(@Param() id: number) {
+    return this.service.getChapter(id);
   }
 }
