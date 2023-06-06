@@ -12,9 +12,9 @@ export class LoginInput {
   @IsNotEmptyString()
   password!: string;
 
-  @Field(() => String)
-  @IsNotEmptyString()
-  deviceToken!: string;
+  // @Field(() => String)
+  // @IsNotEmptyString()
+  // deviceToken!: string;
 }
 @InputType()
 export class HeaderInput {

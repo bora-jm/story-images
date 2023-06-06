@@ -7,6 +7,8 @@ import * as helmet from 'helmet';
 import * as morgan from 'morgan';
 import { resolve } from 'path';
 
+import { AuthGuard } from '@api/auth/auth.guard';
+import { AuthModule } from '@api/auth/auth.module';
 import { ApiExceptionFilter } from '@common';
 import { ConfigModule, ConfigService } from '@lib/config';
 
@@ -42,10 +44,10 @@ async function bootstrap() {
   // configureNestGlobals
   // =================================
   const config = app.select(ConfigModule).get(ConfigService, { strict: true });
-  // const gqlAuthGuard = app.select(GqlAuthModule).get(GqlAuthGuard);
+  const gqlAuthGuard = app.select(AuthModule).get(AuthGuard);
 
   // app.useWebSocketAdapter(new RedisIoAdapter(app, config));
-  // app.useGlobalGuards(gqlAuthGuard);
+  app.useGlobalGuards(gqlAuthGuard);
   app.useGlobalFilters(new ApiExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({

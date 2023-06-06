@@ -8,10 +8,10 @@ import { Repository } from 'typeorm';
 import { T } from '@common';
 import { UserEntity } from '@entities';
 
-import { JWTPayload } from './gql-auth.interfaces';
+import { JWTPayload } from './auth.interfaces';
 
 @Injectable()
-export class GqlAuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(
     private readonly service: JwtService,
     private readonly reflector: Reflector,
